@@ -6,9 +6,11 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import az.maqa.redis.dto.EmployeeDTO;
 import az.maqa.redis.request.RequestEmployee;
 import az.maqa.redis.response.ResponseEmployee;
+import az.maqa.redis.response.ResponseStatus;
 import az.maqa.redis.service.EmployeeService;
 import az.maqa.redis.service.impl.EmployeeServiceImpl;
 
@@ -66,4 +69,27 @@ public class EmployeeController {
 
 		return response;
 	}
+
+	@PutMapping("/{id}")
+	public ResponseEmployee updateEmployee(@RequestBody RequestEmployee requestEmployee, @PathVariable Long id) {
+		ModelMapper modelMapper = new ModelMapper();
+
+		EmployeeDTO employee = employeeService.updateEmployee(requestEmployee, id);
+
+		ResponseEmployee response = modelMapper.map(employee, ResponseEmployee.class);
+
+		employeeServiceImpl.deleteCache();
+
+		return response;
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseStatus deleteEmployee(@PathVariable Long id) {
+		ResponseStatus response = employeeService.deleteEmployee(id);
+
+		employeeServiceImpl.deleteCache();
+
+		return response;
+	}
+
 }

@@ -9,5 +9,7 @@ import az.maqa.redis.model.Employee;
 public interface EmployeeRepository extends CrudRepository<Employee, Long> {
 
 	List<Employee> findAllByActive(Integer active);
+	
+	Employee findEmployeeById(Long id);
 
 }
