@@ -1,0 +1,30 @@
+RedisTemplate is the central class to interact with the Redis data.By default RedisTemplate uses Java serialization. This class is thread-safe once configured. RedisTemplate can be instantiated using different connection factory such as JedisConnectionFactory and LettuceConnectionFactory.
+
+1. JedisConnectionFactory uses JedisPoolConfig for connection pooling.
+2. LettuceConnectionFactory uses LettucePool for connection pooling.
+
+Jedis is a Java Redis client which is small in sze and easy to use
+
+RedisTemplate methods for data operations:
+
+1. ValueOperations<K,V> opsForValue()
+opsForValue returns ValueOperations that performs operation on simple values.
+
+2.ListOperations<K,V> opsForList()
+opsForList() returns ListOperations that performs operation on list values
+
+3.SetOperations<K,V> opsForSet()
+opsForSet() returns SetOperations that performs operation on set values.
+
+4.HashOperations<K,HK,HV> opsForHash()
+opsForHash() returns HashOperations that performs operation on hash values.
+
+
+RedisTemplate does not provide transaction support by default. To enable it we need to call its method
+
+setEnableTransactionSupport(true)
+
+
+When we create any RedisTemplate bean then by default they will not support Spring @Transactional annotation. We need to enable it explicitly by calling setEnableTransactionSupport(true) 
+for each and every RedisTemplate.
+

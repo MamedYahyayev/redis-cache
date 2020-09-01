@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	CacheManager cacheManager;
+
+	private static final String KEY = "EMPLOYEE";
+	
 
 	@Override
 	@Cacheable(cacheNames = "getAllEmployees")
@@ -84,17 +90,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return returnValue;
 	}
 
-	@CacheEvict(value = { "getAllEmployees", "getEmployee" })
+	@Caching(evict = { @CacheEvict(value = "getAllEmployees"), @CacheEvict(value = "getEmployee") })
 	public void deleteCache() {
-		cacheManager.getCacheNames().stream().forEach(cache -> cacheManager.getCache(cache).clear());
+		//cacheManager.getCacheNames().stream().forEach(cache -> cacheManager.getCache(cache).clear());
 		log.info("Caches Deleted");
 	}
 
-	// Delete Cache With Scheduler
-	@Scheduled(fixedRate = 10000)
-	public void deleteCacheAtInterval() {
-		deleteCache();
-	}
+//	// Delete Cache With Scheduler
+//	@Scheduled(fixedRate = 10000)
+//	public void deleteCacheAtInterval() {
+//		deleteCache();
+//	}
 
 	@Override
 	public ResponseStatus deleteEmployee(Long id) {
@@ -110,5 +116,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		return response;
 	}
+
+
 
 }
